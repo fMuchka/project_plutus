@@ -12,13 +12,15 @@ export class Store extends Dexie {
     dividends!: Table<Dividend>;
     buys!: Table<PortfolioItem>;
     sells!: Table<PortfolioItem>;
+    fees!: Table<Fee>;
     
     constructor() {
         super('portfolio');
         this.version(1).stores({
             dividends: '++id,sourceId,timestamp,currency,ticker,amount',
             buys: '++id,sourceId,timestamp,currency,ticker,amount,quantity,pricePerShare',
-            sells: '++id,sourceId,timestamp,currency,ticker,amount,quantity,pricePerShare'
+            sells: '++id,sourceId,timestamp,currency,ticker,amount,quantity,pricePerShare',
+            fees: '++id, timestamp, amount'
         });
     }
 
@@ -26,6 +28,7 @@ export class Store extends Dexie {
         this.dividends.clear();
         this.buys.clear();
         this.sells.clear();
+        this.fees.clear();
     }
 
     async loadBuys(items: PortfolioItem[]) {
@@ -58,6 +61,14 @@ export class Store extends Dexie {
         });
     }
 
+    async loadFees(fees: Fee[]) {
+        await this.transaction("rw", this.fees, () => {
+            for (const fee of fees) {
+                this.fees.add(fee);
+            }
+        });
+    }
+
     async groupDividendsByCurrencyAndYear(year: number) : Promise<{[key in Currencies]? : number}> {
         let sumByCurrency: {[key in Currencies]? : number} = {};
 
@@ -83,9 +94,21 @@ export class Store extends Dexie {
     async getSellsAmount(year: number) : Promise<number> {
         let sum = 0;
 
-        await this.sells.each(d => {
-            if (this.matchYear(d,year)) {
-                sum += d.amount;
+        await this.sells.each(sell => {
+            if (this.matchYear(sell,year)) {
+                sum += sell.amount;
+            }
+        });
+
+        return sum;
+    }
+
+    async getFeesAmount(year: number) : Promise<number> {
+        let sum = 0;
+
+        await this.fees.each(fee => {
+            if (this.matchYear(fee,year)) {
+                sum += fee.amount;
             }
         });
 
