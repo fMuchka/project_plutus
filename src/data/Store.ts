@@ -8,7 +8,6 @@ import type {Currencies } from './records/Currencies';
 import type { RecordBase } from './records/RecordBase';
 
 export class Store extends Dexie {
-
     dividends!: Table<Dividend>;
     buys!: Table<PortfolioItem>;
     sells!: Table<PortfolioItem>;
@@ -29,6 +28,13 @@ export class Store extends Dexie {
         this.buys.clear();
         this.sells.clear();
         this.fees.clear();
+    }
+
+    async load(data: Data) {
+        await this.loadBuys(data.buys);
+        await this.loadSells(data.sells);
+        await this.loadDividends(data.dividends);
+        await this.loadFees(data.fees);
     }
 
     async loadBuys(items: PortfolioItem[]) {
