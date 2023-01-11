@@ -12,9 +12,9 @@ describe('Dummy provider', () => {
 
   it('load returns data', () => {
     const provider : DummyProvider = new DummyProvider();
-    const reader : null = null;
+    const file : null = null;
 
-    const data = provider.load(reader as unknown as FileReader);
+    const data = provider.load(file as unknown as File);
 
     expect(data.buys.length).greaterThan(0);
     expect(data.sells.length).greaterThan(0);

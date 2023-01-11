@@ -5,5 +5,5 @@ export interface IDataProvider {
     title: string;
     address: string;
 
-    load(reader: FileReader): Data;
+    load(reader: File): Data;
 }
