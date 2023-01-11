@@ -5,5 +5,5 @@ export interface IDataProvider {
     title: string;
     address: string;
 
-    load(reader: File): Data;
+    load(reader: File): Promise<Data>;
 }

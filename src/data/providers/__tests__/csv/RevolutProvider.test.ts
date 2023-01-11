@@ -12,11 +12,11 @@ describe('Revolut provider', () => {
     expect(provider.address).toContain("Sapia Partners LLP (Revolut Trading Ltd, 7 Westferry Circus, Canary Wharf, London, E14 4HD)");
   });
 
-  it('no file returns empty data', () => {
+  it('no file returns empty data', async () => {
     const provider : RevolutProvider = new RevolutProvider();
     const file : null = null;
 
-    const data = provider.load(file as unknown as File);
+    const data = await provider.load(file as unknown as File);
 
     expect(data.buys.length).toEqual(0);
     expect(data.sells.length).toEqual(0);
@@ -24,7 +24,7 @@ describe('Revolut provider', () => {
     expect(data.fees.length).toEqual(0);
   });
 
-  it('sample file returns valid data', () => {
+  it('sample file returns valid data', async () => {
     const provider : RevolutProvider = new RevolutProvider();
 
     const revolutData = fs.readFileSync(path.resolve(__dirname, 'RevolutExport.csv'));
@@ -33,7 +33,7 @@ describe('Revolut provider', () => {
       type: "text/plain",
     });
 
-    const data = provider.load(file);
+    const data = await provider.load(file);
 
     expect(data.buys.length).toEqual(0);
     expect(data.sells.length).toEqual(0);

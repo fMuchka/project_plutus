@@ -12,7 +12,7 @@ describe('Providers integration tests', () => {
     const provider : DummyProvider = new DummyProvider();
     const reader : null = null;
 
-    const data = provider.load(reader as unknown as File);
+    const data = await provider.load(reader as unknown as File);
 
     await store.load(data);
 

@@ -14,21 +14,37 @@ export class RevolutProvider implements IDataProvider{
         this.address = "Sapia Partners LLP (Revolut Trading Ltd, 7 Westferry Circus, Canary Wharf, London, E14 4HD)";
     }
     
-    load(file: File):Data {
-        const reader:FileReader = new FileReader();
-        reader.addEventListener("load", () => {
-            // this will then display a text file
-            const data = reader.result;
-          }, false);
+    load(file: File):Promise<Data> {
+        const promise = new Promise<Data>((resolve, reject) => {
+            if(file)
+            {
+                const reader:FileReader = new FileReader();
+                reader.addEventListener("load", () => {
+                    // this will then display a text file
+                    const data = reader.result;
 
-        reader.readAsText(file);
+                    resolve({
+                        buys: [],
+                        sells: [],
+                        dividends: [],
+                        fees: []
+                    });
 
-        return {
-            buys: [],
-            sells: [],
-            dividends: [],
-            fees: []
-        };
+                }, false);
+
+                reader.readAsText(file);
+            }
+            else{
+                resolve({
+                    buys: [],
+                    sells: [],
+                    dividends: [],
+                    fees: []
+                });
+            }
+        });
+
+        return promise;
     }
 
 }
